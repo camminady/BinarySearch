@@ -13082,8 +13082,8 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Learning-To-Search">Learning To Search<a class="anchor-link" href="#Learning-To-Search">&#182;</a></h1><p>This notebook is an attempt to explain (mostly to myself) how reinforcement learning for simple, turn-based, finite-state games work. While there is definitely no shortage of machine-learning related tutorials out there, there've always been certain questions that I felt didn't get the attention they deserved (or I was too slow understanding the answer). Note that a lot of the formalisms are probably more clearly defined in other ressources and possibly under different names. Ultimately, this might use some of the language from the reinforcement community, but the notebook stays self-contained.</p>
-<p>This notebook tries to balance mathematical formulations and code snippets. Ultimately, every implementation related question (that comes to my mind) will be adressed and formulated mathematically, albeit with different degrees of care.</p>
+<h1 id="Learning-To-Search">Learning To Search<a class="anchor-link" href="#Learning-To-Search">&#182;</a></h1><p>This notebook is an attempt to explain how reinforcement learning for simple, turn-based, finite-state games work. While there is definitely no shortage of machine-learning related tutorials out there, there have always been certain questions that I felt didn't get the attention they deserved (or I was too slow understanding the answer). Note that a lot of the formalisms are probably more clearly defined in other resources and possibly under different names. Ultimately, this might use some of the language from the reinforcement community, but the notebook stays self-contained.</p>
+<p>This notebook tries to balance mathematical formulations and code snippets. Ultimately, every implementation related question (that comes to my mind) will be addressed and formulated mathematically, albeit with different degrees of care.</p>
 <p>The game (that will be explained in the next section) is simple and has an optimal strategy which allows for a benchmark / reference solution.</p>
 
 </div>
@@ -13092,7 +13092,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="The-game">The game<a class="anchor-link" href="#The-game">&#182;</a></h2><p>The opponent picks a random integer from the set $\{0,...,n-1\}$. The player gets to make guesses and the opponent will inform the player whether the number guessed was i) too low, ii) too high, or iii) correct. The player has to optimize its strategry to guess numbers as fast as possible (on average). Obviously, the optimal strategy to deploy is binary search. So it will be interesting to see, whether we can <em>learn</em> binary search.</p>
+<h2 id="The-game">The game<a class="anchor-link" href="#The-game">&#182;</a></h2><p>The opponent picks a random integer from the set $\{0,...,n-1\}$. The player gets to make guesses and the opponent will inform the player whether the number guessed was i) too low, ii) too high, or iii) correct. The player has to optimize its strategy to guess numbers as fast as possible (on average). Obviously, the optimal strategy to deploy is binary search. So it will be interesting to see, whether we can <em>learn</em> binary search.</p>
 <h3 id="Example">Example<a class="anchor-link" href="#Example">&#182;</a></h3><p>Player B picks the hidden number $4$.</p>
 <ul>
 <li>Player A picks the value $5$: Player A says: "too high."</li>
@@ -13127,7 +13127,7 @@ Then $\pi$ is a mapping $\pi : \mathcal{A} \times \mathcal{S}^n \rightarrow [0,1
 <p>We will encode this policy as a matrix <code>pi</code> with $4^n$ rows and $n$ columns, where <code>pi[idx(s),a] =</code>$\pi(a|\vec{s})$ and <code>idx</code> denotes the function that maps a state to its id.</p>
 <p><strong>Consequently, <code>pi</code> stores $n \cdot 4^n$ elements.</strong> For $n=10$ that's $10485760$ elements and for $n=20$ already $21990232555520$. We will address the storage problem later. Now, we pick $n=10$ and note that there's no problem storing $10485760$ floats.</p>
 <p>We might use $\pi$ and <code>pi</code> interchangeably from now on.</p>
-<h3 id="Rewards">Rewards<a class="anchor-link" href="#Rewards">&#182;</a></h3><p>We want to reward the machine when it succesfully guessed the right number and penalize it if it didn't. 
+<h3 id="Rewards">Rewards<a class="anchor-link" href="#Rewards">&#182;</a></h3><p>We want to reward the machine when it successfully guessed the right number and penalize it if it didn't. 
 The most simple way to achieve this, is to return a reward of $+1$ if we guessed the number correct and a reward of $-1$ if we failed too often.
 To not only reward the last guess that was correct, but all prior guesses that ultimately led to that reward, we assign rewards to all pairs of states and actions, albeit with a discounted reward.
 If we guessed the right number in the $i-$th attempt, the reward $r$ will also be assigned to guess $j&lt;i$, discounted with $d(i,j,r)$.</p>
@@ -13413,7 +13413,7 @@ The AI will play and we store all relevant information.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We see that the machine dramaticallly improves over time and we are much better at guessing than initially. (Which is not difficult, given that we guessed randomly.) 
+<p>We see that the machine dramatically improves over time and we are much better at guessing than initially. (Which is not difficult, given that we guessed randomly.) 
 But what is the machine actually doing? Let's analyze some games.</p>
 
 </div>
@@ -13747,8 +13747,7 @@ Guesses:
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This can be visualized more compactly as a searchtree
-<img src="https://drive.google.com/file/d/1JRc-CzFkGYdVM-BDBbnYkdrGKAJY2N4H/view?usp=sharing" alt="tree"></p>
+<p>This can be visualized more compactly as a searchtree, shown below the summary.</p>
 
 </div>
 </div>
@@ -13756,9 +13755,9 @@ Guesses:
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>The policy we learned is <strong>not exactly</strong> binary search. But after the initial guess $0$, we roughly split the numbers by half with $5$ as the next choice. From there, we again split the tree in half by choosing $3$ or $8$, depending on the outcome of guess $5$. Afterwards, $3$ different numbers remain in each case and the tree exectues the branch correctly. The fact that the probability to choose a $1$ vs $2$, or $6$ vs $7$ is not $100\%$ but smaller is not relevant, since both choices would be optimal.</p>
-<p>All in all I'm pleasently suprised with this first simple implementation. There was a bit of fine tuning necessary to get <em>good</em> values for $\alpha$ and $\gamma$, but not too much.</p>
-<p>The next question to address is the memory situation. For $10$ cards, it is easy to store the whole policy. For more cards, this might be problematic. One idea to overcome this, would be to only store policies that were triggered at least once. That way, we only need to keep track of significantly fewer policies (since we implicitely assume that and unknown state yields all numbers with equal probability).</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>The policy we learned is <strong>not exactly</strong> binary search. But after the initial guess $0$, we roughly split the numbers by half with $5$ as the next choice. From there, we again split the tree in half by choosing $3$ or $8$, depending on the outcome of guess $5$. Afterwards, $3$ different numbers remain in each case and the tree executes the branch correctly. The fact that the probability to choose a $1$ vs $2$, or $6$ vs $7$ is not $100\%$ but smaller is not relevant, since both choices would be optimal.</p>
+<p>All in all I'm pleasantly surprised with this first simple implementation. There was a bit of fine tuning necessary to get <em>good</em> values for $\alpha$ and $\gamma$, but not too much.</p>
+<p>The next question to address is the memory situation. For $10$ cards, it is easy to store the whole policy. For more cards, this might be problematic. One idea to overcome this, would be to only store policies that were triggered at least once. That way, we only need to keep track of significantly fewer policies (since we implicitly assume that and unknown state yields all numbers with equal probability).</p>
 <p>More on that the next time.</p>
 
 </div>
